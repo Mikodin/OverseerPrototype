@@ -3,4 +3,7 @@ src/main/resources/web/bower_components/
 src/main/resources/web/app/public/css/
 src/main/resources/web/app/public/js/
 target/
+*.*.swp
+*.swp
+*.swo
 
