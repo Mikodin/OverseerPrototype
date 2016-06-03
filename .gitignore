@@ -6,4 +6,5 @@ target/
 *.*.swp
 *.swp
 *.swo
+.*.sw*
 
