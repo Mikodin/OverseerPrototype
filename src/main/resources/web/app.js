@@ -1,9 +1,9 @@
 angular.module('overseer', [
-    'ui.router',
-    'ui.bootstrap',
-    'ui.bootstrap.showErrors',
-    'ngSanitize',
-    'angular.vertilize',
+  'ui.router',
+  'ui.bootstrap',
+  'ui.bootstrap.showErrors',
+  'ngSanitize',
+  'angular.vertilize',
 ]);
 
 var app = angular.module('overseer');
@@ -17,4 +17,17 @@ app.config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
   });
 
   $urlRouterProvider.otherwise('overview');
+});
+
+app.run(function($rootScope, $http, $q, user) {
+
+  user.getUser()
+  .success(function(response) {
+    console.log(response);
+    $rootScope.user = response;
+  })
+  .error(function(response) {
+    console.log('Sowwies no work');
+  });
+
 });

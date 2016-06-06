@@ -7,4 +7,5 @@ target/
 *.swp
 *.swo
 .*.sw*
+*.class
 
