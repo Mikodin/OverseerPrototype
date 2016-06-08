@@ -1,2 +1,24 @@
 <h1>Welcome {{user.realName}} with username of {{user.userName}}</h1>
+<h1>Your session id is {{sessionId}}</h1>
+<h1>Board name: {{allBoards.values[0].board.name}}</h1>
+<h1>Has {{allBoards.values[0].board.workflow.workflowitems.length}} Workflows</h1>
+<ul>
+  <l1>{{allBoards.values[0].board.workflow.workflowitems[0].name}}</l1>
+</ul>
+<h1>Projects on Board: {{allBoards.values[0].projectsOnBoard.values[0].name}}</h1>
+<h1>Projects Tasks: {{allBoards.values[0].board.tasks[0].name}}</h1>
+<h1>{{allBoards.values[0].board.tasks[0].name}} in workflow {{allBoards.values[0].board.workflow.workflowitems[0].name}}</h1>
+
+<div class="container" ng-repeat="board in allBoards.values">
+  <table style="width:100%">
+    <tr>
+      <th ng-repeat="workflow in allBoards.values[0].board.workflow.workflowitems">{{workflow.name}}</th>
+    </tr>
+    <tr>
+      <td>Eve</td>
+      <td>Jackson</td> 
+      <td>94</td>
+    </tr>
+  </table> 
+</div>
 

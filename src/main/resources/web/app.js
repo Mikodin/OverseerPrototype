@@ -19,15 +19,6 @@ app.config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
   $urlRouterProvider.otherwise('overview');
 });
 
-app.run(function($rootScope, $http, $q, user) {
-
-  user.getUser()
-  .success(function(response) {
-    console.log(response);
-    $rootScope.user = response;
-  })
-  .error(function(response) {
-    console.log('Sowwies no work');
-  });
-
+app.run(function($rootScope, $http, $q, rest) {
+  $rootScope.test = 'Allo';
 });

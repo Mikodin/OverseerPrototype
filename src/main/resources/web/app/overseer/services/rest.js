@@ -1,17 +1,15 @@
-app.service('user', UserService);
+app.service('rest', RestService);
 
-UserService.$inject = ['$http', '$state'];
+RestService.$inject = ['$http','$state'];
 
-function UserService($http, $state) {
+function RestService($http,$state) {
 
   this.login = function() {
     return $http({
       method: 'GET',
       url: 'http://localhost:8080/kanbanik/api?command={"commandName":"login","userName":"admin","password":"admin"}',
     }).success(function(response) {
-      realName = response.data.realName;
-      userName = response.data.userName;
-      return response;
+      return response.data;
     });
   };
 
@@ -19,6 +17,15 @@ function UserService($http, $state) {
     return $http({
       method: 'GET',
       url: 'http://localhost:8080/kanbanik/api?command={"commandName":"login","userName":"admin","password":"admin"}',
+    }).success(function(response) {
+      return response.data;
+    });
+  }
+
+  this.getAllBoards = function(sessionId) {
+    return $http({
+      method: 'GET',
+      url: 'http://localhost:8080/kanbanik/api?command={"commandName":"getAllBoardsWithProjects","includeTasks":true,"sessionId":'+'"'+sessionId+'"'+ '}',
     }).success(function(response) {
       return response.data;
     });
