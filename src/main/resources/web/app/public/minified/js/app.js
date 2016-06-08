@@ -50883,12 +50883,33 @@ BoardService.$inject = ['$http', '$state'];
 
 function BoardService($http, $state) {
 
+  var allBoards = '';
+
+  function BoardObject() {
+    this.boardName = '';
+    this.projectsOnBoard = [];
+    this.workFlow = {};
+    this.tasks = [];
+    this.asignees = [];
+    this.pictureUrl = '';
+  }
+
+  function parseBoards(boards) {
+    console.log('in parse boards');
+    for (var i = 0; i < boards.values.length; i++) {
+      console.log(boards.values[i]);
+    }
+  }
+
   this.getAllBoards = function(sessionId) {
+    var testUrl = 'http://localhost:8080/kanbanik/api?command={"commandName":"getAllBoardsWithProjects","includeTasks":true,"sessionId":' +
+      '"' + sessionId + '"' + '}';
     return $http({
       method: 'GET',
-      url: 'http://localhost:8080/kanbanik/api?command={"commandName":"getAllBoardsWithProjects","includeTasks":true,"sessionId":' +
-        '"' + sessionId + '"' + '}',
+      url: testUrl,
     }).success(function(response) {
+      allBoards = response;
+      parseBoards(response);
       console.log('Board');
       return response.data;
     });
@@ -50902,28 +50923,12 @@ app.service('user', UserService);
 UserService.$inject = ['$http', '$state'];
 
 function UserService($http, $state) {
-  var users = [];
-
-  function UserObject() {
-    this.username = '';
-    this.realName = '';
-    this.sessionId = '';
-    this.pictureUrl = '';
-  }
 
   this.login = function() {
     return $http({
       method: 'GET',
       url: 'http://localhost:8080/kanbanik/api?command={"commandName":"login","userName":"admin","password":"admin"}',
     }).success(function(response) {
-      var tmpUser = new UserObject();
-      tmpUser.username = response.data.userName;
-      tmpUser.realName = response.data.realName;
-      tmpUser.sessionId = response.data.sessionid;
-      tmpUser.pictureUrl = response.data.pictureUrl;
-      users.push(tmpUser);
-      console.log(users);
-
       return response.data;
     });
   };
