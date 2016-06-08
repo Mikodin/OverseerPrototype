@@ -1,8 +1,8 @@
-app.service('rest', RestService);
+app.service('user', UserService);
 
-RestService.$inject = ['$http','$state'];
+UserService.$inject = ['$http', '$state'];
 
-function RestService($http,$state) {
+function UserService($http, $state) {
 
   this.login = function() {
     return $http({
@@ -20,15 +20,5 @@ function RestService($http,$state) {
     }).success(function(response) {
       return response.data;
     });
-  }
-
-  this.getAllBoards = function(sessionId) {
-    return $http({
-      method: 'GET',
-      url: 'http://localhost:8080/kanbanik/api?command={"commandName":"getAllBoardsWithProjects","includeTasks":true,"sessionId":'+'"'+sessionId+'"'+ '}',
-    }).success(function(response) {
-      return response.data;
-    });
-  }
-
+  };
 }

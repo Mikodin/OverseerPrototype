@@ -21,13 +21,13 @@ module.exports = function(grunt) {
     },
     clean: {
       src: [
-        'app/public/**/*.css',
-        'app/public/**/*.js'
+        'app/public/minified/**/*.css',
+        'app/public/minified/**/*.js'
       ]
     },
     jshint: {
       src: [
-          'app/app.js',
+          'app.js',
           'app/overseer/**/*.js'
       ],
       options: {
@@ -41,7 +41,7 @@ module.exports = function(grunt) {
     },
     jscs: {
       src: [
-          'app/app.js',
+          'app.js',
           'app/overseer/**/*.js'
       ],
       options: {
@@ -58,7 +58,7 @@ module.exports = function(grunt) {
     ngAnnotate: {
         angular_app: {
             files: {
-              'app/public/js/app.js': [
+              'app/public/minified/js/app.js': [
                 'bower_components/angular/angular.js',
                 'bower_components/angular-ui-router/release/angular-ui-router.js',
                 'bower_components/angular-cookie/angular-cookie.js',
@@ -68,7 +68,7 @@ module.exports = function(grunt) {
                 'bower_components/angular-sanitize/angular-sanitize.js',
                 'bower_components/angular-validation-match/dist/angular-validation-match.js',
                 'bower_components/angular-vertilize/angular-vertilize.js',
-                'app/app.js',
+                'app.js',
                 'app/overseer/**/*.js'
               ]
             }
@@ -84,17 +84,29 @@ module.exports = function(grunt) {
       },
       base: {
         files: {
-          'app/public/js/base.js': [
+          'app/public/minified/js/base.js': [
             'bower_components/jquery/dist/jquery.js',
             'bower_components/bootstrap/dist/js/bootstrap.js',
-            'bower_components/startbootstrap-sb-admin-2/dist/js/sb-admin-2.js'
+            'bower_components/angular/angular.js',
+            'bower_components/angular-route/angular-route.js',
+            'bower_components/angular-cookies/angular-cookies.js',
+            'bower_components/angular-sanitize/angular-sanitize.js',
+            'bower_components/angular-ui-router/release/angular-ui-router.js',
+            'bower_components/angular-ui-router-title/angular-ui-router-title.js',
+            'bower_components/angular-loader/angular-loader.js',
+            'bower_components/angular-bootstrap/ui-bootstrap.js',
+            'bower_components/angular-bootstrap-show-errors/src/showErrors.js',
+            'bower_components/angular-vertilize/angular-vertilize.js',
           ]
         }
       },
       app: {
         files: {
-          'app/public/js/app.js': [
-            'app/public/js/app.js'
+          'app/public/minified/js/app.js': [
+            'app.js',
+            'app/overseer/services/user.js',
+            'app/overseer/services/board.js',
+            'app/overseer/controllers/OverviewCtrl.js',
           ]
         }
       }
@@ -116,10 +128,10 @@ module.exports = function(grunt) {
       },
       base: {
         files: {
-          'app/public/css/base.css': [
+          'app/public/minified/css/base.css': [
             'bower_components/bootstrap/dist/css/bootstrap.css',
             'bower_components/font-awesome/css/font-awesome.css',
-            'app/public/css/styles.css'
+            'app/assets/css/styles.css'
           ]
         }
       }
@@ -127,38 +139,38 @@ module.exports = function(grunt) {
     watch: {
       scripts: {
         files: [
-          'app/app.js',
+          'app.js',
           'app/overseer/**/*.js'
-        ],
-        tasks: ['default'],
-        options: {
-          spawn: false,
-        },
-      },
-      styles: {
-        files: [
-          'app/assets/less/*.less',
-          'app/assets/less/**/*.less'
-        ],
-        tasks: ['less', 'cssmin'],
-        options: {
-          spawn: false,
-        },
-      },
-    }
-  });
+                            ],
+                            tasks: ['default'],
+                            options: {
+                            spawn: false,
+                            },
+                            },
+                            styles: {
+                            files: [
+                            'app/assets/less/*.less',
+                            'app/assets/less/**/*.less'
+                                                 ],
+                                                 tasks: ['less', 'cssmin'],
+                                                 options: {
+                                                 spawn: false,
+                                                 },
+                                                 },
+                                                 }
+                                                 });
 
-  grunt.registerTask('default', [
-    'newer:jshint',
-    'ngAnnotate:angular_app',
-    'newer:uglify',
-    'newer:less',
-    'newer:cssmin',
-    'newer:jscs'
-  ]);
+                                                 grunt.registerTask('default', [
+                                                 'newer:jshint',
+                                                 'ngAnnotate:angular_app',
+                                                 'newer:uglify',
+                                                 'newer:less',
+                                                 'newer:cssmin',
+                                                 'newer:jscs'
+                                                 ]);
 
-  grunt.registerTask('lint', [
-    'jshint',
-    'jscs',
-  ]);
-};
+                                                 grunt.registerTask('lint', [
+                                                 'jshint',
+                                                 'jscs',
+                                                 ]);
+                                                 };

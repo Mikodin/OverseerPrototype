@@ -10,6 +10,7 @@
 <h1>{{allBoards.values[0].board.tasks[0].name}} in workflow {{allBoards.values[0].board.workflow.workflowitems[0].name}}</h1>
 
 <div class="container" ng-repeat="board in allBoards.values">
+  <h1>{{allBoards.values[0].board.name}}</h1>
   <table style="width:100%">
     <tr>
       <th ng-repeat="workflow in allBoards.values[0].board.workflow.workflowitems">{{workflow.name}}</th>
