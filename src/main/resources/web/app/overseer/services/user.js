@@ -3,6 +3,7 @@ app.service('user', UserService);
 UserService.$inject = ['$http', '$state'];
 
 function UserService($http, $state) {
+  var loggedUser = ''; 
 
   this.login = function() {
     return $http({

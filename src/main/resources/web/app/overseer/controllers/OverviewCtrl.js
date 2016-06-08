@@ -3,6 +3,7 @@ app.controller('OverviewCtrl', OverviewCtrl);
 OverviewCtrl.inject = ['$scope', '$http', '$q','$user', '$board'];
 
 function OverviewCtrl($scope, $http, $q, user, board) {
+
   $scope.user = '';
   $scope.allBoards = '';
   $scope.sessionId = '';

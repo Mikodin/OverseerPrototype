@@ -3,7 +3,12 @@ app.service('board', BoardService);
 BoardService.$inject = ['$http', '$state'];
 
 function BoardService($http, $state) {
-
+ function userObject = {
+    this.username = '',
+    this.realName = '',
+    this.sessionId = '',
+    this.pictureUrl = ''
+ };
   this.getAllBoards = function(sessionId) {
     return $http({
       method: 'GET',
