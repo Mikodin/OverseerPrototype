@@ -1,11 +1,35 @@
-<h1>Welcome {{user.realName}} with username of {{user.userName}}</h1>
-<h1>Your session id is {{sessionId}}</h1>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-1 well">
+      <button class="btn btn-default" type="submit" ng-repeat="board in allBoards" ng-click="selectBoard(board.id)">{{board.name}}</button>
+    </div>
+    <div class="col-md-8 well">
+      <table style="width:100%">
+        <thead>
+          <tr>
+            <th>Project</th>
+            <th># Tasks</th> 
+            <th>Start</th>
+            <th>End</th>
+            <th>Effort</th>
+            <th>Team</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="project in selectedBoard.projects">
+            <td>{{project.name}}</td>
+            <td>{{project.tasks.length}}</td> 
+            <td>TBD</td>
+            <td>TBD</td>
+            <td>TBD</td>
+            <td>{{project.teamString}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col-md-2 well">
+      <h3>Details</h3>
+    </div>
 
-<div class="container" ng-repeat="board in allBoards">
-  <h1>{{board.name}}</h1>
-  <ul>
-    <h2>Projects</h2>
-    <li ng-repeat="project in board.projects">{{project.name}}</li>
-  </ul>
+  </div>
 </div>
-

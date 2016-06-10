@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+	<title>angular-tablesorter</title>
+	
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="../lib/jquery.tablesorter/dist/css/theme.bootstrap.min.css">
+
+	<script src="../lib/jquery/dist/jquery.min.js"></script>
+	<script src="../lib/jquery.tablesorter/dist/js/jquery.tablesorter.min.js"></script>
+	<script src="../lib/jquery.tablesorter/dist/js/jquery.tablesorter.widgets.min.js"></script>
+	<script src="../lib/jquery.tablesorter/dist/js/widgets/widget-pager.min.js"></script>
+
+	<script src="../lib/angular/angular.min.js"></script>
+	<script src="../angular-tablesorter.js"></script>
+
+	<script src="app.js"></script>
+
+</head>
+<body ng-controller="MainCtrl">
+	
+	<tablesorter config="tblConfig" ng-model="tblData"></tablesorter>
+	
+</body>
+</html>

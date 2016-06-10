@@ -29,6 +29,7 @@ app.run(function($rootScope, $http, $q, user, board) {
       board.getAllBoards($rootScope.sessionId)
         .success(function(response) {
           $rootScope.allBoards = board.constructBoards(response);
+          $rootScope.selectedBoard = $rootScope.allBoards[0];
         })
       .error(function(response) {
         console.log(response);

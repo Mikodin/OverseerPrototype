@@ -1,0 +1,26 @@
+{
+  "name": "angular-tablesorter",
+  "version": "0.0.1",
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-concurrent": "*",
+    "grunt-contrib-uglify": "*",
+    "grunt-contrib-watch": "*",
+    "matchdep": "*"
+  },
+  "dependencies": {
+    "connect": "^3.3.4",
+    "serve-static": "^1.9.1"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "description": "AngularJS directive for jQuery Tablesorter",
+  "main": "Gruntfile.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jmcenteno/angular-tablesorter.git"
+  },
+  "author": "jmcenteno <jmcenteno@gmail.com>",
+  "license": "MIT"
+}

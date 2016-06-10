@@ -14,9 +14,11 @@ function BoardService($http, $state) {
   }
 
   function ProjectObject() {
+    this.id = '';
     this.name = '';
     this.completion = 0;
     this.team = [];
+    this.teamString = '';
     this.tasks = [];
     this.workFlow = [];
   }
@@ -67,8 +69,16 @@ function BoardService($http, $state) {
         tempProject.team = parseTeam(tempProject.tasks);
         // console.log('Temp Project');
         // console.log(tempProject);
+
+        for (var k = 0; k < tempProject.team.length; k++) {
+          if (k !== tempProject.team.length - 1) {
+            tempProject.teamString += tempProject.team[k].name + ',';
+          }
+        }
+
         projects.push(tempProject);
         tempBoard.projects = projects;
+
       }
 
       allBoards.push(tempBoard);
@@ -154,6 +164,23 @@ function BoardService($http, $state) {
     }
     return team;
   }
+
+  /**
+   * getBoard
+   * Returns the board with the associated id
+   *
+   * @param {int} id
+   * @returns {Object}
+   */
+  this.getBoard = function(id) {
+    console.log('getId ' + id);
+    for (var i = 0; i < allBoards.length; i++) {
+      console.log(allBoards[i]);
+      if (allBoards[i].id === id) {
+        return allBoards[i];
+      }
+    }
+  };
 
   /**
    * getAllBoards

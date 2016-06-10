@@ -68,6 +68,7 @@ module.exports = function(grunt) {
                 'bower_components/angular-sanitize/angular-sanitize.js',
                 'bower_components/angular-validation-match/dist/angular-validation-match.js',
                 'bower_components/angular-vertilize/angular-vertilize.js',
+                'app/assets/js/angular-tablesorter/angular-tablesorter.js',
                 'app.js',
                 'app/overseer/**/*.js'
               ]
@@ -86,6 +87,7 @@ module.exports = function(grunt) {
         files: {
           'app/public/minified/js/base.js': [
             'bower_components/jquery/dist/jquery.js',
+            '/bower_components/tablesorter/dist/js/jquery.tablesorter.js',
             'bower_components/bootstrap/dist/js/bootstrap.js',
             'bower_components/angular/angular.js',
             'bower_components/angular-route/angular-route.js',
@@ -97,6 +99,7 @@ module.exports = function(grunt) {
             'bower_components/angular-bootstrap/ui-bootstrap.js',
             'bower_components/angular-bootstrap-show-errors/src/showErrors.js',
             'bower_components/angular-vertilize/angular-vertilize.js',
+            'app/assets/js/angular-tablesorter/angular-tablesorter.js',
           ]
         }
       },
