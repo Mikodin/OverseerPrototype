@@ -69,10 +69,10 @@ function BoardService($http, $state) {
         tempProject.team = parseTeam(tempProject.tasks);
         // console.log('Temp Project');
         // console.log(tempProject);
-
         for (var k = 0; k < tempProject.team.length; k++) {
-          if (k !== tempProject.team.length - 1) {
-            tempProject.teamString += tempProject.team[k].name + ',';
+          tempProject.teamString += tempProject.team[k].name;
+          if (k < tempProject.team.length - 1) {
+            tempProject.teamString += ', ';
           }
         }
 
@@ -159,10 +159,32 @@ function BoardService($http, $state) {
         member.name = projectTasks[i].assignedTo.realName;
         member.userName = projectTasks[i].assignedTo.userName;
         member.permissions = projectTasks[i].assignedTo.permissions;
-        team.push(member);
+        if (!containsMember(team, member)) {
+          team.push(member);
+        }
       }
     }
     return team;
+  }
+
+  /**
+   * containsMember
+   * Checks to see if a member is already in the team
+   *
+   * @param {Array} teamMembers
+   * @param {Object} member
+   * @returns {Boolean}
+   */
+  function containsMember(teamMembers, member) {
+    if (teamMembers.length === 0) {
+      return false;
+    }
+    for (var i = 0; i < teamMembers.length; i++) {
+      if (member.userName === teamMembers[i].userName) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /**
@@ -173,9 +195,7 @@ function BoardService($http, $state) {
    * @returns {Object}
    */
   this.getBoard = function(id) {
-    console.log('getId ' + id);
     for (var i = 0; i < allBoards.length; i++) {
-      console.log(allBoards[i]);
       if (allBoards[i].id === id) {
         return allBoards[i];
       }
@@ -197,7 +217,6 @@ function BoardService($http, $state) {
       method: 'GET',
       url: testUrl,
     }).success(function(response) {
-      // constructBoards(response);
       return response;
     });
   };
