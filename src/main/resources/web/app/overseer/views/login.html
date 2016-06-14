@@ -1,17 +1,22 @@
 <div class="container">
-
-  <form class="form-signin">
-    <h2 class="form-signin-heading">Please sign in</h2>
-    <label class="sr-only" for="inputText">Username</label>
-    <input class="form-control" id="inputText" autofocus="" required="" placeholder="Username">
-    <label class="sr-only" for="inputPassword">Password</label>
-    <input class="form-control" id="inputPassword" required="" type="password" placeholder="Password">
-    <div class="checkbox">
-      <label>
-        <input type="checkbox" value="remember-me"> Remember me
-      </label>
+  <div class="panel panel-kashmir">
+    <div class="panel-heading">
+      <h3 class="panel-title">
+        <i class="fa fa-sign-in"></i>Please Sign-in 
+      </h3>
     </div>
-    <button class="btn btn-lg btn-primary btn-block" type="submit" ng-click="login()">Sign in</button>
-  </form>
+
+    <form ng-submit="login(person)" role="form" ng-init="person = {}">
+      <fieldset>
+        <div class="form-group">
+          <input class="form-control" name="username" ng-model="person.username" placeholder="Username" type="username" autofocus required="required" />
+        </div>
+        <div class="form-group">
+          <input class="form-control" name="password" ng-model="person.password" placeholder="Password" type="password" value="" required="required">
+        </div>
+        <button type="submit" class="btn btn-lg btn-primary btn-block">Sign in</button>
+      </fieldset>
+    </form>
+  </div>
 
 </div>

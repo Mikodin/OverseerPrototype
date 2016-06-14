@@ -1,4 +1,4 @@
-/* 2016-06-13 */
+/* 2016-06-14 */
 if (function(global, factory) {
     "object" == typeof module && "object" == typeof module.exports ? module.exports = global.document ? factory(global, !0) : function(w) {
         if (!w.document) throw new Error("jQuery requires a window with a document");
@@ -7399,7 +7399,7 @@ if (function(global, factory) {
             }
         }
         var asInitVals, i, label, th, sRangeFormat = "From {from} to {to}", afnSearch_ = new Array(), aiCustomSearch_Indexes = new Array(), fnOnFiltered = function() {}, oTable = this, defaults = {
-            sPlaceHolder: "foot",
+            sPlaceHolder: "head",
             sRangeSeparator: "~",
             iFilteringDelay: 500,
             aoColumns: null,

@@ -1,17 +1,14 @@
-// Use DATATABLES https://l-lin.github.io/angular-datatables/#/withColumnFilter
-
 app.controller('OverviewCtrl', OverviewCtrl);
 
-OverviewCtrl.inject = ['$rootScope','$scope', '$http', '$q', 'board', 'DTOptionsBuilder', 'DTColumnBuilder'];
+OverviewCtrl.inject = ['$rootScope','$scope', '$compile', '$http', '$q', 'board', 'DTOptionsBuilder', 'DTColumnBuilder'];
 
-function OverviewCtrl($rootScope, $scope, $http, $q, board, DTOptionsBuilder, DTColumnBuilder) {
+function OverviewCtrl($rootScope, $scope, $compile, $http, $q, board, DTOptionsBuilder, DTColumnBuilder) {
 
   $scope.dtCtrl = this;
 
   var getTableData = function() {
     var deferred = $q.defer();
     deferred.resolve($rootScope.selectedBoard.projects);
-    console.log(deferred.promise);
     return deferred.promise;
   };
 
@@ -20,7 +17,9 @@ function OverviewCtrl($rootScope, $scope, $http, $q, board, DTOptionsBuilder, DT
     return getTableData();
   })
   .withPaginationType('simple_numbers')
+    .withOption('createdRow',createdRow)
     .withColumnFilter({
+      sPlaceHolder: 'head:after',
       aoColumns: [{
         type: 'text',
         bRegex: true,
@@ -31,17 +30,44 @@ function OverviewCtrl($rootScope, $scope, $http, $q, board, DTOptionsBuilder, DT
         type: 'text',
         bRegex: true,
         bSmart: true
+      }, {
+        type: 'text',
+        bRegex: true,
+        bSmart: true
+      }, {
+        type: 'text',
+        bRegex: true,
+        bSmart: true
+      }, {
+        type: 'none'
       }]
     });
 
   $scope.dtCtrl.cols = [
     DTColumnBuilder.newColumn('name').withTitle('Project Name'),
     DTColumnBuilder.newColumn('tasks.length').withTitle('Tasks'),
-    DTColumnBuilder.newColumn('teamString').withTitle('Team')
+    DTColumnBuilder.newColumn('startDateStr').withTitle('Start Date'),
+    DTColumnBuilder.newColumn('endDateStr').withTitle('End Date'),
+    DTColumnBuilder.newColumn('effort').withTitle('Effort'),
+    DTColumnBuilder.newColumn('teamString').withTitle('Team'),
+    DTColumnBuilder.newColumn(null).withTitle('Actions').notSortable().renderWith(detailsButtonHTML),
   ];
 
   $scope.dtCtrl.dtInstance = {};
 
+  function createdRow(row, data, dataIndex) {
+    $compile(angular.element(row).contents())($scope);
+  }
+
+  function detailsButtonHTML(data) {
+    return '<button class="btn btn-primary btn-block" ng-click="viewDetails(' + data.name + ')"><i class="fa fa-gears"></i> View Details</button>';
+  }
+
+  $scope.viewDetails = function(projectId) {
+    console.log('fire!');
+    // $scope.currentProject = this.getHub(_hubId);
+    console.log(projectId);
+  };
   /*
      board.getAllBoards($rootScope.sessionId)
      .success(function(response) {

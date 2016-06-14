@@ -4,7 +4,7 @@
  * License: MIT
  */
 LoginCtrl.$inject = ["$rootScope", "$scope", "$http", "$q", "$state", "board", "user"];
-OverviewCtrl.$inject = ["$rootScope", "$scope", "$http", "$q", "board", "DTOptionsBuilder", "DTColumnBuilder"];
+OverviewCtrl.$inject = ["$rootScope", "$scope", "$compile", "$http", "$q", "board", "DTOptionsBuilder", "DTColumnBuilder"];
 (function(window) {'use strict';
 
 /**
@@ -52271,8 +52271,9 @@ LoginCtrl.inject = ['$rootScope','$scope', '$http', '$q', '$state', 'board', 'us
 
 function LoginCtrl($rootScope, $scope, $http, $q, $state, board, user) {
 
-  $scope.login = function() {
-    user.getUser()
+  $scope.login = function(person) {
+    console.log(user);
+    user.login(person)
       .success(function(response) {
         $rootScope.user = response;
         $rootScope.sessionId = response.sessionId;
@@ -52289,26 +52290,24 @@ function LoginCtrl($rootScope, $scope, $http, $q, $state, board, user) {
 
       })
     .error(function(response) {
+      alert('You entered a wrong username or password');
       console.log(response);
     });
   };
 
 }
 
-// Use DATATABLES https://l-lin.github.io/angular-datatables/#/withColumnFilter
-
 app.controller('OverviewCtrl', OverviewCtrl);
 
-OverviewCtrl.inject = ['$rootScope','$scope', '$http', '$q', 'board', 'DTOptionsBuilder', 'DTColumnBuilder'];
+OverviewCtrl.inject = ['$rootScope','$scope', '$compile', '$http', '$q', 'board', 'DTOptionsBuilder', 'DTColumnBuilder'];
 
-function OverviewCtrl($rootScope, $scope, $http, $q, board, DTOptionsBuilder, DTColumnBuilder) {
+function OverviewCtrl($rootScope, $scope, $compile, $http, $q, board, DTOptionsBuilder, DTColumnBuilder) {
 
   $scope.dtCtrl = this;
 
   var getTableData = function() {
     var deferred = $q.defer();
     deferred.resolve($rootScope.selectedBoard.projects);
-    console.log(deferred.promise);
     return deferred.promise;
   };
 
@@ -52317,7 +52316,9 @@ function OverviewCtrl($rootScope, $scope, $http, $q, board, DTOptionsBuilder, DT
     return getTableData();
   })
   .withPaginationType('simple_numbers')
+    .withOption('createdRow',createdRow)
     .withColumnFilter({
+      sPlaceHolder: 'head:after',
       aoColumns: [{
         type: 'text',
         bRegex: true,
@@ -52328,17 +52329,44 @@ function OverviewCtrl($rootScope, $scope, $http, $q, board, DTOptionsBuilder, DT
         type: 'text',
         bRegex: true,
         bSmart: true
+      }, {
+        type: 'text',
+        bRegex: true,
+        bSmart: true
+      }, {
+        type: 'text',
+        bRegex: true,
+        bSmart: true
+      }, {
+        type: 'none'
       }]
     });
 
   $scope.dtCtrl.cols = [
     DTColumnBuilder.newColumn('name').withTitle('Project Name'),
     DTColumnBuilder.newColumn('tasks.length').withTitle('Tasks'),
-    DTColumnBuilder.newColumn('teamString').withTitle('Team')
+    DTColumnBuilder.newColumn('startDateStr').withTitle('Start Date'),
+    DTColumnBuilder.newColumn('endDateStr').withTitle('End Date'),
+    DTColumnBuilder.newColumn('effort').withTitle('Effort'),
+    DTColumnBuilder.newColumn('teamString').withTitle('Team'),
+    DTColumnBuilder.newColumn(null).withTitle('Actions').notSortable().renderWith(detailsButtonHTML),
   ];
 
   $scope.dtCtrl.dtInstance = {};
 
+  function createdRow(row, data, dataIndex) {
+    $compile(angular.element(row).contents())($scope);
+  }
+
+  function detailsButtonHTML(data) {
+    return '<button class="btn btn-primary btn-block" ng-click="viewDetails(' + data.name + ')"><i class="fa fa-gears"></i> View Details</button>';
+  }
+
+  $scope.viewDetails = function(projectId) {
+    console.log('fire!');
+    // $scope.currentProject = this.getHub(_hubId);
+    console.log(projectId);
+  };
   /*
      board.getAllBoards($rootScope.sessionId)
      .success(function(response) {
@@ -52381,6 +52409,11 @@ function BoardService($http, $state) {
     this.teamString = '';
     this.tasks = [];
     this.workFlow = [];
+    this.startDate = '';
+    this.startDateStr = '';
+    this.endDate = '';
+    this.endDateStr = '';
+    this.effort = 0;
   }
 
   function WorkFlowObject() {
@@ -52394,6 +52427,7 @@ function BoardService($http, $state) {
     this.workFlow = '';
     this.workFlowId = '';
     this.assignedTo = '';
+    this.dueDate = '';
   }
 
   function Member() {
@@ -52412,23 +52446,37 @@ function BoardService($http, $state) {
    * @returns {Object} allBoards
    */
   this.constructBoards = function(boards) {
+    console.log(boards);
     for (var i = 0; i < boards.values.length; i++) {
       var tempBoard = new BoardObject();
+      var tempProjects = [];
+
       tempBoard.id = boards.values[i].board.id;
       tempBoard.name = boards.values[i].board.name;
       tempBoard.workFlow = boards.values[i].board.workflow.workflowitems;
 
-      var projects = [];
       for (var j = 0; j < boards.values[i].projectsOnBoard.values.length; j++) {
         var tempProject = new ProjectObject();
 
         tempProject.id = boards.values[i].projectsOnBoard.values[j].id;
         tempProject.name = boards.values[i].projectsOnBoard.values[j].name;
+
+        // Create the tasks, workflow and find the team members of this project
         tempProject.tasks = parseTasks(tempProject.id, boards.values[i].board.tasks);
+
+        // Parse dates for start time of project, end date of project, effort(Difference between the latest and earliest task)
+        // and put these dates into readable, short strings
+        tempDates = parseProjDates(tempProject);
+        tempProject.startDate = tempDates.earliestDate;
+        tempProject.startDateStr = formatDateStr(tempDates.earliestDate);
+        tempProject.endDate = tempDates.latestDate;
+        tempProject.endDateStr = formatDateStr(tempDates.latestDate);
+        tempProject.effort = calcEffort(tempProject.endDate,tempProject.startDate);
+
         tempProject.workFlow = parseWorkFlow(boards.values[i].board.workflow.workflowitems, tempProject.tasks);
         tempProject.team = parseTeam(tempProject.tasks);
-        // console.log('Temp Project');
-        // console.log(tempProject);
+
+        // Construct teamString
         for (var k = 0; k < tempProject.team.length; k++) {
           tempProject.teamString += tempProject.team[k].name;
           if (k < tempProject.team.length - 1) {
@@ -52436,8 +52484,8 @@ function BoardService($http, $state) {
           }
         }
 
-        projects.push(tempProject);
-        tempBoard.projects = projects;
+        tempProjects.push(tempProject);
+        tempBoard.projects = tempProjects;
 
       }
 
@@ -52447,6 +52495,88 @@ function BoardService($http, $state) {
     console.log(allBoards);
     return allBoards;
   };
+
+  /**
+   * parseProjDates
+   * Goes through each task in a project and determines the start of the project based on
+   * the earliest task, and determines the end of the project based on the latest scheduled task
+   *
+   * @param {Object} project
+   * @returns {JSON}
+   */
+  function parseProjDates(project) {
+
+    function Dates() {
+      this.earliestDate = '';
+      this.latestDate = '';
+    }
+
+    var dates = new Dates();
+
+    for (var i = 0; i < project.tasks.length; i++) {
+      if (project.tasks[i].dueDate !== undefined) {
+
+        if (dates.earliestDate === '') {
+          dates.earliestDate = project.tasks[i].dueDate;
+        } else if (project.tasks[i].dueDate < dates.earliestDate) {
+          dates.earliestDate = project.tasks[i].dueDate;
+        }
+
+        if (dates.latestDate === '') {
+          dates.latestDate = project.tasks[i].dueDate;
+        } else if (project.tasks[i].dueDate > dates.latestDate) {
+          dates.latestDate = project.tasks[i].dueDate;
+        }
+      }
+
+    }
+    return dates;
+  }
+
+  /**
+   * formatDateStr
+   * Formats the date object and returns a string in the desired format mm/dd/yyyy
+   *
+   * @param {Date} date
+   * @returns {String}
+   */
+  function formatDateStr(date) {
+    var monthNames = [
+      'January', 'February', 'March',
+      'April', 'May', 'June', 'July',
+      'August', 'September', 'October',
+      'November', 'December'
+    ];
+
+    if (date !== '') {
+      var day = date.getDate();
+      var monthIndex = date.getMonth();
+      var year = date.getFullYear();
+
+      return monthNames[monthIndex] + ' ' + day + ' ' +  year;
+    } else {
+      return '--';
+    }
+
+  }
+
+  /**
+   * calcEffort
+   * Subtracts the two Date objects and returns the difference in days
+   *
+   * @param {Date} start
+   * @param {Date} end
+   * @returns {Number}
+   */
+  function calcEffort(start, end) {
+    console.log('Get Effort');
+    console.log(start);
+    console.log(end);
+    var timeDiff = Math.abs(end - start);
+    var effort = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+    return effort;
+  }
 
   /**
    * parseTasks
@@ -52468,6 +52598,8 @@ function BoardService($http, $state) {
           tempTask.name = tasks[k].name;
           tempTask.assignedTo = tasks[k].assignee;
           tempTask.workFlowId = tasks[k].workflowitemId;
+          tempTask.dueDate = new Date(tasks[k].dueDate);
+          tempTask.dueDateString = tasks[k].dueDate;
           parsedTasks.push(tempTask);
         }
       }
@@ -52589,11 +52721,12 @@ UserService.$inject = ['$http', '$state'];
 
 function UserService($http, $state) {
 
-  this.login = function() {
+  this.login = function(person) {
     return $http({
       method: 'GET',
-      url: 'http://localhost:8080/kanbanik/api?command={"commandName":"login","userName":"admin","password":"admin"}',
+      url: 'http://localhost:8080/kanbanik/api?command={"commandName":"login","userName":"' + person.username + '","password":"' + person.password + '"}',
     }).success(function(response) {
+      console.log(response);
       return response.data;
     });
   };
