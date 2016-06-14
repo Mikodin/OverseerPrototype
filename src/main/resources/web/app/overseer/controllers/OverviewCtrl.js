@@ -6,9 +6,18 @@ function OverviewCtrl($rootScope, $scope, $compile, $http, $q, board, DTOptionsB
 
   $scope.dtCtrl = this;
 
+  board.getAllBoards($rootScope.sessionId)
+    .success(function(response) {
+      $scope.allBoards = board.constructBoards(response);
+      $scope.selectedBoard = $scope.allBoards[0];
+    })
+  .error(function(response) {
+    console.log(response);
+  });
+
   var getTableData = function() {
     var deferred = $q.defer();
-    deferred.resolve($rootScope.selectedBoard.projects);
+    deferred.resolve($scope.selectedBoard.projects);
     return deferred.promise;
   };
 
@@ -69,7 +78,7 @@ function OverviewCtrl($rootScope, $scope, $compile, $http, $q, board, DTOptionsB
     console.log(projectId);
   };
   /*
-     board.getAllBoards($rootScope.sessionId)
+     board.getAllBoards($scope.sessionId)
      .success(function(response) {
      $scope.allBoards = board.constructBoards(response);
      $scope.selectedBoard = $scope.allBoards[0];
@@ -81,7 +90,7 @@ function OverviewCtrl($rootScope, $scope, $compile, $http, $q, board, DTOptionsB
 
   $scope.selectBoard = function(id) {
     var resetPaging = true;
-    $rootScope.selectedBoard = board.getBoard(id);
+    $scope.selectedBoard = board.getBoard(id);
     $scope.dtCtrl.dtInstance.reloadData(null, resetPaging);
   };
 
